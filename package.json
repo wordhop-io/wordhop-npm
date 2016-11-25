@@ -1,0 +1,25 @@
+{
+  "name": "wordhop",
+  "version": "1.3.23",
+  "description": "A toolkit for Chatbot Optimization",
+  "main": "src/wordhop.js",
+  "dependencies": {
+    "request-promise": "^3.0.0",
+    "socket.io-client": "^1.4.8"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "keywords": [
+    "chatbot",
+    "bot",
+    "opitmization",
+    "bot",
+    "analytics"
+  ],
+  "author": "Michael Nathanson",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wordhop-io/wordhop.git"
+  }
+}
