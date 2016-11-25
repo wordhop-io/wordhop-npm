@@ -5,14 +5,14 @@ With Wordhop you can connect Chatbots you're building on different messaging pla
 WHAT YOU WILL NEED TO GET STARTED:
 * [A Slack Account](http://www.slack.com)
 * [Wordhop for Slack](https://slack.com/oauth/authorize?scope=users:read,users:read.email,commands,chat:write:bot,channels:read,channels:write,bot&client_id=23850726983.39760486257)
-* [Any messaging Chatbot built with Node.js](https://developer.wordhop.io/botbuilders.html)
+* [A Chatbot built with Node.js](https://developer.wordhop.io/botbuilders.html)
 
-Currenct Wordhop Chatbot Connectors:
+Once you've completed the above, integrate Wordhop into your Chatbot:
 * [Wordhop for a Messenger bot built with Botkit](docs/wordhop_messenger_botkit.md)
 * [Wordhop for a Messenger bot built with custom Node.js](docs/wordhop_messenger_custom.md)
 * [Wordhop for a Slack bot built with Botkit](docs/wordhop_slack_botkit.md)
 * [Wordhop for a Slack bot built with custom Node.js](docs/wordhop_slack_custom.md)
 
-Looking for something we don't seem to support yet?  
+Looking for something we don't support yet?  
 * [Join our mailing list and we'll notifiy you](https://www.wordhop.io/contact.html)
 * [Contact Support](mailto:support@wordhop.io)
