@@ -53,4 +53,4 @@ Go back to Slack and wait for alerts. That's it!
 
 * [Example implementation using Botkit](https://github.com/wordhop-io/wordhop/blob/master/examples/slack_bot_botkit.js)
 * [More on WebSockets](https://github.com/websockets/ws)
-* [< README Index](./README.md)
+* [< README Index](../README.md)
