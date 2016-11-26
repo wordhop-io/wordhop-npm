@@ -43,7 +43,7 @@ Wordhop can trigger alerts to suggest when a human should take over for your Cha
 wordhop.assistanceRequested(message);
 ```
 
-Wordhop can pause your bot so that it doesn't auto response while a human has taken over. To enable this, add the following line of code before you trigger your bot to respond. 
+Wordhop can pause Chatbot responses while a human taken overs. To enable this, add the following line of code before you trigger your Chatbot resposnes: 
 
 ```javascript
 if (message.paused) { return };
