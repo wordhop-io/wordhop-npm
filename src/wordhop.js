@@ -616,7 +616,7 @@ module.exports = function(apiKey, clientkey, config) {
         throw new Error('YOU MUST SUPPLY A CLIENT_KEY TO WORDHOP');
     }
     var serverRoot = 'https://wordhopapi.herokuapp.com';
-    var socketServer = '"https://wordhop-socket-server.herokuapp.com"';
+    var socketServer = 'https://wordhop-socket-server.herokuapp.com';
     var debug = false;
     var controller;
     var platform = 'slack';
@@ -631,6 +631,8 @@ module.exports = function(apiKey, clientkey, config) {
     }
     var wordhopbot = WordhopBot(apiKey, serverRoot, socketServer, controller, clientkey, token, debug); 
     var wordhopObj;
+
+    platform = platform.toLowerCase();
     
     if (platform == 'slack') {
         wordhopObj = new WordhopBotSlack(wordhopbot, apiKey, serverRoot, controller, debug);
