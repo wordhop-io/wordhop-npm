@@ -207,15 +207,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, controller, clientke
 
     socket.on('chat response', function (msg) {
         var event = 'chat response';
-        var message = {text:msg.text};
-        if (msg.attachments) {
-            message.attachments = msg.attachments;
-        }
-        message.channel = msg.channel.toUpperCase();
-        message.type = "message";
-        message.live = true;
-        message.sourceTeam = msg.team;
-        that.trigger(event, [message]);
+        that.trigger(event, [msg]);
     });
 
     socket.on('chat message', function (msg) {
