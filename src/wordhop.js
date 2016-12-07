@@ -1,15 +1,15 @@
 'use strict';
 
 var rp = require('request-promise');
+var Promise = require("bluebird");
 var io = require('socket.io-client');
 
-function WordhopBot(apiKey, serverRoot, path, socketServer, controller, clientkey, token, debug) {
+function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, debug) {
     var that = Object;
     var socket = io.connect(socketServer);
     that.apiKey = apiKey;
     that.serverRoot = serverRoot;
     that.path = path;
-    that.controller = controller;
     that.debug = debug;
     that.clientkey = clientkey;
     that.token = token;
@@ -19,17 +19,33 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, controller, clientke
         socket.emit(event, message);
     }
 
-    that.checkIfMessage = function(message) {
-        if (message.sender) {
-            var channel = message.sender.id
-            message = message.message;
-            message.channel = channel;
+    that.checkIfMessage = function(msg) {
+        var message = msg;
+        if (message.entry) {
+          if (message.entry[0].messaging) {
+            var facebook_message = message.entry[0].messaging[0];
+            if (facebook_message.message) {
+              return true;
+            }
+          }
         }
-        if ((message.type === 'user_message' || message.type === 'message' || message.type == null || message.page || message.entry) 
-            ) {
+        if (msg.message) {
+            message = msg.message;
+        }
+        if (message.text == null) {
+            message.text = "";
+        }
+        if ((message.type === 'user_message' || message.type === 'message' || message.type == null || message.page) &&
+            message.transcript == null &&
+            (message.subtype == null || message.subtype === "file_share") &&
+            message.hasOwnProperty("reply_to") == false &&
+            message.is_echo == null &&
+            message.bot_id == null &&
+            (message.text.length > 0 || message.attachments != null || message.attachment != null)) {
             return true;
-        };
-        return false;
+        } else {
+            return false;
+        }
     }
 
     that.logUnkownIntent = function(message) {
@@ -50,12 +66,12 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, controller, clientke
             },
             json: message
         };
-        rp(data);
+        return rp(data);
     }
 
     that.assistanceRequested = function(message) {
         if (that.checkIfMessage(message) == false) {
-            return;
+            return Promise.resolve();
         }
         console.log("assistanceRequested");
         var data = {
@@ -69,12 +85,12 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, controller, clientke
             },
             json: message
         };
-        rp(data);
+        return rp(data);
     }
 
     that.hopIn = function(message) {
         if (that.checkIfMessage(message) == false) {
-            return;
+            return Promise.resolve();
         }
         console.log("hopIn");
         var data = {
@@ -93,7 +109,8 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, controller, clientke
         if (that.token != "") {
             data.headers.token = that.token;
         }
-        rp(data);
+        console.log(data);
+        return rp(data);
     }
 
     that.hopOut = function(message) {
@@ -196,17 +213,17 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, controller, clientke
             },
             json: {'socket_id': socket_id}
         };
-        that.trigger('message');
+        that.trigger('socket_id_set');
         rp(data);
-    });
-
-    socket.on('failure log', function (msg) {
-        var event = 'failure log';
-        that.trigger(event, [msg]);
     });
 
     socket.on('chat response', function (msg) {
         var event = 'chat response';
+        that.trigger(event, [msg]);
+    });
+
+    socket.on('failure log', function (msg) {
+        var event = 'failure log';
         that.trigger(event, [msg]);
     });
 
@@ -246,40 +263,27 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, controller, clientke
 
 function WordhopBotFacebook(wordhopbot, controller, debug) {
     var that = this;
+    that.controller = controller;
     wordhopbot.platform = 'messenger';
-    if (wordhopbot.controller) {
-        wordhopbot.controller.on('message_received', function(bot, message) {
+    if (that.controller) {
+        that.controller.on('message_received', function(bot, message) {
             wordhopbot.logUnkownIntent(message);
         });
     }
+    
     that.hopIn = function(message, cb) {
-        if (wordhopbot.checkIfMessage(message) == false) {
-            return;
-        }
-        var channel = message.channel;
-        if (message.sender) {
-            channel = message.sender.id;
-        }
-        if (message.entry) {
-            if (message.entry[0].messaging) {
-                var facebook_message = message.entry[0].messaging[0];
-                if (facebook_message.message) {
-                    channel = facebook_message.sender.id;
-                }
-            }
-        }
-        wordhopbot.checkForPaused(channel, function(res) { 
-            if (res) {
-                message.paused = res.paused;
-            }
-            wordhopbot.hopIn(message);
-            var isPaused = false;
-            if (res) {
-                isPaused = res.paused;
+        wordhopbot.hopIn(message).then(function (obj) {
+            var isPaused = true;
+            if (obj) {
+                message.paused = obj.paused;
+                isPaused = obj.paused;
             }
             if (cb) {
                 cb(isPaused);
             } 
+        })
+        .catch(function (err) {
+            cb(false);
         });
     };
 
@@ -299,23 +303,21 @@ function WordhopBotFacebook(wordhopbot, controller, debug) {
 function WordhopBotSlack(wordhopbot, controller, debug) {
     var that = this;
     wordhopbot.platform = 'slack';
+    that.controller = controller;
 
     that.hopIn = function(message, cb) {
-        if (wordhopbot.checkIfMessage(message) == false) {
-            return;
-        }
-        wordhopbot.checkForPaused(message.channel, function(res) { 
-            if (res) {
-                message.paused = res.paused;
-            }
-            wordhopbot.hopIn(message);
-            var isPaused = false;
-            if (res) {
-                isPaused = res.paused;
-            }
+        wordhopbot.hopIn(message).then(function (obj) {
+            var isPaused = true;
+            if (obj) {
+                isPaused = obj.paused;
+            } 
+            message.paused = isPaused;
             if (cb) {
                 cb(isPaused);
             } 
+        })
+        .catch(function (err) {
+            cb(false);
         });
     };
 
@@ -387,13 +389,13 @@ function WordhopBotSlack(wordhopbot, controller, debug) {
         }
         return message;
     }
-    if (wordhopbot.controller) {
+    if (that.controller) {
         // reply to a direct mention
-        wordhopbot.controller.on('direct_mention', function(bot, message) {
+        that.controller.on('direct_mention', function(bot, message) {
             wordhopbot.logUnkownIntent(message);
         });
         // reply to a direct message
-        wordhopbot.controller.on('direct_message', function(bot, message) {
+        that.controller.on('direct_message', function(bot, message) {
             wordhopbot.logUnkownIntent(message);
         });
     }
@@ -410,7 +412,7 @@ module.exports = function(apiKey, clientkey, config) {
     if (!clientkey) {
         throw new Error('YOU MUST SUPPLY A CLIENT_KEY TO WORDHOP');
     }
-    var serverRoot = 'https://wordhopapi.herokuapp.com';
+    var serverRoot = 'https://developer.wordhop.io';
     var socketServer = 'https://wordhop-socket-server.herokuapp.com';
     var path = '/api/v1/';
     var debug = false;
@@ -425,7 +427,7 @@ module.exports = function(apiKey, clientkey, config) {
         socketServer = config.socketServer || socketServer;
         token = config.token || token;
     }
-    var wordhopbot = WordhopBot(apiKey, serverRoot, path, socketServer, controller, clientkey, token, debug); 
+    var wordhopbot = WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, debug); 
     var wordhopObj;
 
     platform = platform.toLowerCase();
