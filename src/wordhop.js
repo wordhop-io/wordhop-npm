@@ -412,7 +412,7 @@ module.exports = function(apiKey, clientkey, config) {
     if (!clientkey) {
         throw new Error('YOU MUST SUPPLY A CLIENT_KEY TO WORDHOP');
     }
-    var serverRoot = 'https://developer.wordhop.io';
+    var serverRoot = 'https://wordhopapi.herokuapp.com';
     var socketServer = 'https://wordhop-socket-server.herokuapp.com';
     var path = '/api/v1/';
     var debug = false;
