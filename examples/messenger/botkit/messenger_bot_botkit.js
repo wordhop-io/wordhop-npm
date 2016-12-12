@@ -65,6 +65,8 @@ This bot demonstrates many of the core features of Botkit:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+require('dotenv').config();
+
 
 if (!process.env.MESSENGER_PAGE_ACCESS_TOKEN) {
     console.log('Error: Specify page_token in environment');
@@ -125,7 +127,7 @@ controller.setupWebserver(process.env.port || 5000, function(err, webserver) {
 
 // Wordhop related code
 
-var wordhop = require('../src/wordhop')(process.env.WORDHOP_API_KEY, process.env.WORDHOP_CLIENT_KEY,
+var wordhop = require('wordhop')(process.env.WORDHOP_API_KEY, process.env.WORDHOP_CLIENT_KEY,
         {platform:'messenger',
         token:process.env.MESSENGER_PAGE_ACCESS_TOKEN
     });

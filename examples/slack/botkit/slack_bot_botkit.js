@@ -63,6 +63,7 @@ This bot demonstrates many of the core features of Botkit:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+require('dotenv').config();
 
 if (!process.env.token) {
     console.log('Error: Specify token in environment');
@@ -226,8 +227,7 @@ function formatUptime(uptime) {
 
 
 
-var wordhop = require('../src/wordhop')(process.env.WORDHOP_API_KEY, process.env.WORDHOP_CLIENT_KEY,
-    {platform:'slack'});
+var wordhop = require('wordhop')(process.env.WORDHOP_API_KEY, process.env.WORDHOP_CLIENT_KEY, {platform:'slack'});
 
 
 // Add the wordhop middleware 

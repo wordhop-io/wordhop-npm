@@ -1,15 +1,12 @@
 
+
 var express = require('express');
 var app = express();
-
 var request = require('request');
-
-var wordhop = require('wordhop')(process.env.WORDHOP_API_KEY,process.env.WORDHOP_BOT_KEY,
-    {platform:'slack'});
-
-
 var WebSocket = require('ws');
+require('dotenv').config();
 
+var wordhop = require('wordhop')(process.env.WORDHOP_API_KEY,process.env.WORDHOP_CLIENT_KEY, {platform:'slack'});
 
 //start
 app.listen(3000, function(){

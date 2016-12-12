@@ -1,0 +1,18 @@
+{
+"scripts": {
+    "start": "node ./messenger_bot_botkit.js"
+  },
+  "dependencies": {
+    "botkit":"^0.4.3",
+    "dotenv":"^2.0.0",
+    "wordhop":"^1.3.32"
+  },
+    "engines": {
+    "node": "5.11.1"
+  },
+  "repository" :
+  { "type" : "git", 
+    "url" : "https://github.com/wordhop-io/wordhop-npm.git"
+  },
+  "license" : "BSD-3-Clause" 
+}

@@ -60,7 +60,7 @@ if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
   process.exit(1);
 }
 
-var wordhop = require('../src/wordhop')(process.env.WORDHOP_API_KEY, process.env.WORDHOP_CLIENT_KEY,
+var wordhop = require('wordhop')(process.env.WORDHOP_API_KEY, process.env.WORDHOP_CLIENT_KEY,
         {platform:'messenger',
         token:PAGE_ACCESS_TOKEN
     });

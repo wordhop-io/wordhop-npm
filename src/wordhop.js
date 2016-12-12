@@ -332,9 +332,9 @@ function WordhopBotSlack(wordhopbot, controller, debug) {
 
     // botkit middleware endpoints
     that.receive = function(bot, message, next) {  
-        var message = that.modifiedMessage(message, bot);
-        if (message.event) {
-            that.hopIn(message, function(res) { 
+        var msg = that.modifiedMessage(JSON.parse(JSON.stringify(message)), bot);
+        if (msg.event) {
+            that.hopIn(msg, function(res) { 
                 next();
             }); 
         } else {
