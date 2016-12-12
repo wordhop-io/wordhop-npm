@@ -144,7 +144,7 @@ Wordhop can trigger alerts to suggest when a human should take over for your Cha
 
 ```javascript
 // match an intent to talk to a real human
-if (incomingMessage.text == 'help') {
+if (text == 'help') {
     // let the user know that they are being routed to a human
     var outgoingMessage = {'channel':channel,'text':'Hang tight. Let me see what I can do.'};  // <= Schema matches Slack
     sendIt(outgoingMessage);
