@@ -109,7 +109,6 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
         if (that.token != "") {
             data.headers.token = that.token;
         }
-        console.log(data);
         return rp(data);
     }
 
