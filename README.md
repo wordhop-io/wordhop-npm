@@ -3,8 +3,9 @@
 
 Wordhop monitors your Chatbot and alerts you on Slack in real-time when it detects conversational problems. You can watch your bot conversations with users in real-time without leaving Slack and take-over your bot to engage your customers directly.  Simply add Wordhop to Slack and then drop in code into your Chatbot (You can use our examples as a starting point for a bot too). Wordhop integrates in minutes, and begins working immediately.
 
-![Diagram](https://wordhop.io/img/step2b.png)
+This module has been tested with Messenger, Slack, Skype, and Microsoft Webchat. Please see our [examples](./examples/).
 
+![Diagram](https://wordhop.io/img/step2b.png)
 
 ### What you can do with Wordhop:
 * [See Key Features](https://developer.wordhop.io)

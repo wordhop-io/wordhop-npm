@@ -269,22 +269,30 @@ function WordhopBotFacebook(wordhopbot, controller, debug) {
             wordhopbot.logUnkownIntent(message);
         });
     }
-    
-    that.hopIn = function(message, cb) {
-        wordhopbot.hopIn(message).then(function (obj) {
-            var isPaused = true;
-            if (obj) {
-                message.paused = obj.paused;
-                isPaused = obj.paused;
-            }
-            if (cb) {
-                cb(isPaused);
-            } 
-        })
-        .catch(function (err) {
-            cb(false);
+
+    // botkit middleware endpoints
+    that.send = function(bot, message, next) {
+        that.hopOut(message);
+        next();   
+    };
+
+    that.receive = function(bot, message, next) {
+        that.hopIn(message, function(msg) {
+            next();
         });
     };
+}
+
+
+function WordhopBotMicrosoft(wordhopbot, controller, debug) {
+    var that = this;
+    that.controller = controller;
+    wordhopbot.platform = 'microsoft';
+    if (that.controller) {
+        that.controller.on('message_received', function(bot, message) {
+            wordhopbot.logUnkownIntent(message);
+        });
+    }
 
     // botkit middleware endpoints
     that.send = function(bot, message, next) {
@@ -303,23 +311,7 @@ function WordhopBotSlack(wordhopbot, controller, debug) {
     var that = this;
     wordhopbot.platform = 'slack';
     that.controller = controller;
-
-    that.hopIn = function(message, cb) {
-        wordhopbot.hopIn(message).then(function (obj) {
-            var isPaused = true;
-            if (obj) {
-                isPaused = obj.paused;
-            } 
-            message.paused = isPaused;
-            if (cb) {
-                cb(isPaused);
-            } 
-        })
-        .catch(function (err) {
-            cb(false);
-        });
-    };
-
+    
     // botkit middleware endpoints
     that.send = function(bot, message, next) {
         if (message.user == null) {
@@ -436,6 +428,9 @@ module.exports = function(apiKey, clientkey, config) {
     } else if (platform == 'facebook' || platform == 'messenger') {
         platform = "messenger";
         wordhopObj = new WordhopBotFacebook(wordhopbot, controller, debug);
+    } else if (platform == 'microsoft') {
+        platform = "microsoft";
+        wordhopObj = new WordhopBotMicrosoft(wordhopbot, controller, debug);
     } else {
         throw new Error('platform not supported. please set it to be either "slack" or "messenger (alias: facebook)".');
     }
@@ -447,6 +442,22 @@ module.exports = function(apiKey, clientkey, config) {
     wordhopObj.hopOut = wordhopbot.hopOut;
     wordhopObj.logUnkownIntent = wordhopbot.logUnkownIntent;
     wordhopObj.assistanceRequested = wordhopbot.assistanceRequested;
+    wordhopObj.hopIn = function(message, cb) {
+        wordhopbot.hopIn(message).then(function (obj) {
+            var isPaused = true;
+            if (obj) {
+                isPaused = obj.paused;
+            } 
+            message.paused = isPaused;
+            if (cb) {
+                cb(isPaused);
+            } 
+        })
+        .catch(function (err) {
+            cb(false);
+        });
+    };
+
     
     return wordhopObj;
 };

@@ -1,0 +1,17 @@
+{
+  "name": "wordhop-microsoft",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node botframework_bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "",
+    "wordhop": "^1.3.35",
+    "botkit":""
+  }
+}
