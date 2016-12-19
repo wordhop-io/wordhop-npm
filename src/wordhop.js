@@ -326,6 +326,11 @@ function WordhopBotSlack(wordhopbot, controller, debug) {
         var msg = that.modifiedMessage(JSON.parse(JSON.stringify(message)), bot);
         if (msg.event) {
             that.hopIn(msg, function(res) { 
+                var isPaused = true;
+                if (res) {
+                    isPaused = res.paused;
+                } 
+                message.paused = isPaused;
                 next();
             }); 
         } else {
