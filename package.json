@@ -1,6 +1,6 @@
 {
   "name": "wordhop",
-  "version": "1.3.39",
+  "version": "1.3.40",
   "description": "A toolkit for creating a hybrid Chatbot + Human UX",
   "main": "src/wordhop.js",
   "dependencies": {
