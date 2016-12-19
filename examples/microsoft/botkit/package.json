@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "",
-    "wordhop": "^1.3.38",
+    "wordhop": "^1.3.39",
     "botkit":""
   }
 }

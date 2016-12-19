@@ -90,6 +90,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
 
     that.hopIn = function(message) {
         if (that.checkIfMessage(message) == false) {
+            console.log("no message?");
             return Promise.resolve();
         }
         console.log("hopIn");
@@ -325,11 +326,11 @@ function WordhopBotSlack(wordhopbot, controller, debug) {
     that.receive = function(bot, message, next) {  
         var msg = that.modifiedMessage(JSON.parse(JSON.stringify(message)), bot);
         if (msg.event) {
-            that.hopIn(msg, function(res) { 
-                var isPaused = true;
-                if (res) {
-                    isPaused = res.paused;
-                } 
+            that.hopIn(msg, function(res) {
+                console.log("res");
+                console.log(res); 
+                var isPaused = res;
+                 
                 message.paused = isPaused;
                 next();
             }); 
@@ -449,6 +450,9 @@ module.exports = function(apiKey, clientkey, config) {
     wordhopObj.assistanceRequested = wordhopbot.assistanceRequested;
     wordhopObj.hopIn = function(message, cb) {
         wordhopbot.hopIn(message).then(function (obj) {
+            console.log(obj);
+            console.log(obj);
+
             var isPaused = true;
             if (obj) {
                 isPaused = obj.paused;
