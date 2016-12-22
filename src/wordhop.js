@@ -37,7 +37,9 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
             if (slackMessage) {
                 message = slackMessage;
             } else if (msg.source == "facebook") {
-                message = msg.sourceEvent;
+                if (msg.sourceEvent.message) {
+                    return true;
+                }
             }
         }
         if (message.text == null) {
