@@ -77,6 +77,9 @@ var botPlatform = 'microsoft'; // <= possible values: 'messenger', 'slack', 'mic
 var token = process.env.MESSENGER_PAGE_ACCESS_TOKEN; // <= to see profile image in transcript for Messenger channel, you must include
 var wordhop = Wordhop(apiKey, clientKey, {platform: botPlatform, token:token});
 
+var apiai = require('apiai');
+var apiaiapp = apiai(process.env.APIAI_TOKEN);
+
 
 const ops = commandLineArgs([
       {name: 'lt', alias: 'l', args: 1, description: 'Use localtunnel.me to make your bot available on the web.',
@@ -136,39 +139,128 @@ wordhop.on('chat response', function (message) {
 controller.hears(['help', 'operator', 'human', 'demo'], 'message_received', function(bot, message) {
     // Forwards request to talk to a human to Wordhop
     wordhop.assistanceRequested(message);
-    if (message.paused) { return };
-    var data = {
-      method: 'POST',
-      url: 'https://wordhop-chatterbot.herokuapp.com/message',
-      headers: {
-          'content-type': 'application/json',
-          clientkey:  clientKey,
-          incoming:  message.text
-      }
-    };
-    var request = require("request");
-    request(data, function(error, response, body) {
-        console.log("body");
-        var obj = JSON.parse(body);
-        if (obj.response && obj.confidence > 0.5) {
-          bot.reply(message, obj.response);
-        } else {
-          bot.reply(message, 'Let me see if I can connect you to a live agent.');
-        }
-        console.log(body);
-    });
+    //incoming(bot, message, "Let me see if I can connect you to a live agent.");
+    bot.reply(message, "Let me see if I can connect you to a live agent.")
+    
 });
 
 
 // Handle receiving a message
 controller.on(['direct_mention','message_received'],function(bot,message) { 
     // log an unknown intent with Wordhop
-    console.log("direct_mention");
-    console.log(message);
-        
+    incoming(bot, message, "Sorry, can you rephrase that?");
+}); 
 
-    if (message.paused) { return };
-    var data = {
+
+function sendMessage(bot, message, reply) {
+
+	if (message.paused) { return };
+    
+        
+    if (message.payload || message.user == null) {
+
+        if (reply.attachments) {
+            console.log(message);
+            bot.say({channel:message.channel, text: reply.text, attachments: reply.attachments});
+        }
+         else {
+            bot.say({channel:message.channel, text: reply});
+        }
+
+    } 
+    else if (!bot.res && message.user) {
+        bot.reply(message,reply);     
+    } 
+    else if (message.user) {
+        bot.replyPrivate(message,reply);
+    }
+     
+}
+
+
+function incoming(bot, message, defaultReply) {
+	var input = message.text;
+    
+    console.log("input: "+input);
+    console.log(message);
+
+    if (input === undefined) {
+        return;
+    }
+
+  
+
+    var words = input.split(" ", 3);
+  
+
+    if (input.length > 255) {
+        console.log("log unknown intent");
+        wordhop.logUnkownIntent(message);
+        return;
+
+    }
+
+    if (input == ":rabbit:") {
+        sendMessage(bot, message, "Yup, that's me!");
+        return;
+    }
+
+    
+    if (input.toLowerCase() == "start over") {
+        input = "clear";
+    }
+
+	var trequest = apiaiapp.textRequest(input, {sessionId:message.user});
+    trequest.on('response', function(response) {
+        console.log(response);
+        console.log(JSON.stringify(response.result.contexts));
+        apiaiResponse(bot, message, response, defaultReply);
+    });
+    trequest.on('error', function(error) {
+        console.log(error);
+        wordhop.logUnkownIntent(message);
+        sendMessage(bot, message, defaultReply);
+    });
+    trequest.end();
+}
+
+
+
+function apiaiResponse(bot, message, response, defaultReply) {
+
+    console.log("apiaiResponse");
+
+    var text = response.result.fulfillment.speech;
+
+    text = text.replace(/\\n/g, "\n");
+    text = text.replace(/\\t/g, "\t");
+
+    if ((response.result.metadata.intentId == null && text == "") || (response.result.metadata.intentId && response.result.score < 0.56)){
+        console.log("log unknown intent");
+        chatterbot(bot, message, defaultReply);
+    } 
+    else if (response.result.action == "help") {
+        sendMessage(bot, message, text);
+    }
+    else if (response.result.action == "smalltalk.greetings") {
+        sendMessage(bot, message, text);
+    }
+    else if (response.result.action == "input.unknown") {
+        console.log("logging unknown intent")
+        chatterbot(bot, message, defaultReply);
+    }
+    else if (text != "")  {
+        sendMessage(bot, message, text);
+    }
+    else {
+        console.log("log unknown intent");
+        chatterbot(bot, message, defaultReply);
+    }
+
+}
+
+function chatterbot(bot, message, defaultReply)  {
+	var data = {
       method: 'POST',
       url: 'https://wordhop-chatterbot.herokuapp.com/message',
       headers: {
@@ -177,18 +269,18 @@ controller.on(['direct_mention','message_received'],function(bot,message) {
           incoming:  message.text
       }
     };
+    console.log(data);
     var request = require("request");
     request(data, function(error, response, body) {
         console.log("body");
         var obj = JSON.parse(body);
         if (obj.response && obj.confidence > 0.5) {
-          bot.reply(message, obj.response);
+          sendMessage(bot, message, obj.response);
         } else {
-          wordhop.logUnkownIntent(message); 
-          bot.reply(message, 'huh?');
+       	  wordhop.logUnkownIntent(message);
+        
+          sendMessage(bot, message, defaultReply);
         }
         console.log(body);
     });
-
-    
-}); 
+}

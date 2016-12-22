@@ -32,6 +32,14 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
         if (msg.message) {
             message = msg.message;
         }
+        if  (msg.sourceEvent) {
+            var slackMessage = obj.sourceEvent.SlackMessage;
+            if (slackMessage) {
+                message = slackMessage;
+            } else if (msg.source == "facebook") {
+                message = msg.sourceEvent;
+            }
+        }
         if (message.text == null) {
             message.text = "";
         }
