@@ -100,11 +100,11 @@ var bot = controller.spawn({
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 
-controller.setupWebserver(process.env.PORT || 3978, function(err, webserver) {
+controller.setupWebserver(process.env.port || 3978, function(err, webserver) {
     controller.createWebhookEndpoints(webserver, bot, function() {
         console.log('ONLINE!');
         if(ops.lt) {
-            var tunnel = localtunnel(process.env.PORT || 3978, {subdomain: ops.ltsubdomain}, function(err, tunnel) {
+            var tunnel = localtunnel(process.env.port || 3978, {subdomain: ops.ltsubdomain}, function(err, tunnel) {
                 if (err) {
                     console.log(err);
                     process.exit();
@@ -133,62 +133,21 @@ wordhop.on('chat response', function (message) {
 
 
 // Listens for an intent whereby a user wants to talk to a human
-controller.hears(['help', 'operator', 'human', 'demo'], 'message_received', function(bot, message) {
+controller.hears(['help', 'operator', 'human'], 'message_received', function(bot, message) {
     // Forwards request to talk to a human to Wordhop
     wordhop.assistanceRequested(message);
-    if (message.paused) { return };
-    var data = {
-      method: 'POST',
-      url: 'https://wordhop-chatterbot.herokuapp.com/message',
-      headers: {
-          'content-type': 'application/json',
-          clientkey:  clientKey,
-          incoming:  message.text
-      }
-    };
-    var request = require("request");
-    request(data, function(error, response, body) {
-        console.log("body");
-        var obj = JSON.parse(body);
-        if (obj.response && obj.confidence > 0.5) {
-          bot.reply(message, obj.response);
-        } else {
-          bot.reply(message, 'Let me see if I can connect you to a live agent.');
-        }
-        console.log(body);
-    });
 });
 
+// give the bot something to listen for.
+controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
+    // If your bot is paused, stop it from replying
+    if (message.paused) { return };
+    bot.reply(message,'Hello there.');
+});
 
 // Handle receiving a message
 controller.on(['direct_mention','message_received'],function(bot,message) { 
     // log an unknown intent with Wordhop
-    console.log("direct_mention");
-    console.log(message);
-        
-
-    if (message.paused) { return };
-    var data = {
-      method: 'POST',
-      url: 'https://wordhop-chatterbot.herokuapp.com/message',
-      headers: {
-          'content-type': 'application/json',
-          clientkey:  clientKey,
-          incoming:  message.text
-      }
-    };
-    var request = require("request");
-    request(data, function(error, response, body) {
-        console.log("body");
-        var obj = JSON.parse(body);
-        if (obj.response && obj.confidence > 0.5) {
-          bot.reply(message, obj.response);
-        } else {
-          wordhop.logUnkownIntent(message); 
-          bot.reply(message, 'huh?');
-        }
-        console.log(body);
-    });
-
-    
+    wordhop.logUnkownIntent(message); 
+    bot.reply(message, 'huh?');
 }); 
