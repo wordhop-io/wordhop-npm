@@ -1,0 +1,30 @@
+{
+  "name": "botkit-studio-starter-wordhop",
+  "version": "0.0.1",
+  "description": "A starter kit for building a custom bot with Botkit Studio with Wordhop integration",
+  "main": "bot.js",
+  "dependencies": {
+    "botkit": "^0.4",
+    "dashbot": "0.7.4",
+    "wordfilter": "^0.2.6",
+    "wordhop": "^1.3.44"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/howdyai/botkit-studio-starter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/howdyai/botkit-studio-starter/issues"
+  },
+  "homepage": "https://github.com/howdyai/botkit-studio-starter",
+  "keywords": [
+    "bots",
+    "chatbots",
+    "slack",
+    "wordhop"
+  ],
+  "author": "ben@howdy.ai",
+  "license": "ISC"
+}
