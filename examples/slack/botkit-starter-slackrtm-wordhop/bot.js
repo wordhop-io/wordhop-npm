@@ -85,7 +85,7 @@ if (process.env.WORDHOP_API_KEY && process.env.WORDHOP_CLIENT_KEY) {
   // Add the wordhop middleware 
   controller.middleware.receive.use(wordhop.receive); 
   controller.middleware.send.use(wordhop.send);
-  // Hnadle forwarding the messages sent by a human through your bot
+  // Handle forwarding the messages sent by a human through your bot
   wordhop.on('chat response', function (message) {
       bot.say(message);
   });
