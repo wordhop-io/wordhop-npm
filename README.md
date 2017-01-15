@@ -1,7 +1,7 @@
-# [Wordhop](https://www.wordhop.io) - Monitor and Control Your Chatbot From Slack
+# [Wordhop](https://www.wordhop.io) - A Toolkit For Human + AI Conversational Experiences
 ## For Chatbots Built in Node.js
 
-Wordhop monitors your Chatbot and alerts you on Slack in real-time when it detects conversational problems. You can watch your bot conversations with users in real-time without leaving Slack and take-over your bot to engage your customers directly.  Simply add Wordhop to Slack and then drop in code into your Chatbot (You can use our examples as a starting point for a bot too). Wordhop integrates in minutes, and begins working immediately.
+Bots allow businesses to respond faster and lower operational costs, but they can't empathize like humans, or solve overly complex customer problems. With Wordhop, you can monitor your bot for communication problems and take over live to delight your customers. Add our SDK to bots you build and add your team. Wordhop begins working immediately enabling you to deliver an exceptional conversational experience.
 
 This module has been tested with Messenger, Slack, Skype, and Microsoft Webchat. Please see our [examples](./examples/).
 
