@@ -29,6 +29,9 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
             }
           }
         }
+        if (message.postback) {
+            return true;
+        }
         if (msg.message) {
             message = msg.message;
         }
@@ -450,7 +453,7 @@ module.exports = function(apiKey, clientkey, config) {
     var socketServer = 'https://wordhop-socket-server.herokuapp.com';
     var nlpURL = 'https://wordhop-chatterbot.herokuapp.com';
     var path = '/api/v1/';
-    var debug = false;
+    var debug = false;  
     var controller;
     var platform = 'slack';
     var token = '';
