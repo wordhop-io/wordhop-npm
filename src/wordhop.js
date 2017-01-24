@@ -24,7 +24,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
         if (message.entry) {
           if (message.entry[0].messaging) {
             var facebook_message = message.entry[0].messaging[0];
-            if (facebook_message.message) {
+            if (facebook_message.message || facebook_message.postback) {
               return true;
             }
           }
@@ -45,7 +45,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
         if (message.text == null) {
             message.text = "";
         }
-        if ((message.type === 'user_message' || message.type === 'message' || message.type == null || message.page) &&
+        if ((message.type === 'user_message' || message.type === 'message'|| message.type === 'facebook_postback' || message.type == null || message.page) &&
             message.transcript == null &&
             (message.subtype == null || message.subtype === "file_share") &&
             message.hasOwnProperty("reply_to") == false &&
@@ -266,6 +266,37 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
         that.trigger(event, [msg]);
     });
 
+    that.query = function(message) {
+        console.log("query");    
+        var headers = {
+                        'content-type': 'application/json',
+                        'apikey': that.apiKey,
+                        'clientkey': that.clientkey
+                    };
+        var data = {
+            method: 'POST',
+            url: that.nlpURL + '/message',
+            headers: headers,
+            json: {incoming:  message.text}
+        };
+        return rp(data);
+    }
+
+    that.queryWithBot = function(bot, message) {
+        return that.query(message).then(function(obj) {
+            if (obj.response && obj.confidence > 0.5) {
+              bot.reply(message, obj.response);
+              return Promise.resolve(obj);
+            } else {
+              that.logUnkownIntent(message);
+              return Promise.reject();
+            }
+        })
+        .catch(function (err) {
+            return Promise.reject();
+        });
+    }
+
     return that;
 }
 
@@ -417,6 +448,7 @@ module.exports = function(apiKey, clientkey, config) {
     }
     var serverRoot = 'https://wordhopapi.herokuapp.com';
     var socketServer = 'https://wordhop-socket-server.herokuapp.com';
+    var nlpURL = 'https://wordhop-chatterbot.herokuapp.com';
     var path = '/api/v1/';
     var debug = false;
     var controller;
@@ -425,12 +457,14 @@ module.exports = function(apiKey, clientkey, config) {
     if (config) {
         debug = config.debug;
         serverRoot = config.serverRoot || serverRoot;
+        nlpURL = config.nlpURL || nlpURL;
         controller = config.controller;
         platform = config.platform || platform;
         socketServer = config.socketServer || socketServer;
         token = config.token || token;
     }
-    var wordhopbot = WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, debug); 
+    var wordhopbot = WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, debug);
+    wordhopbot.nlpURL = nlpURL;
     var wordhopObj;
 
     platform = platform.toLowerCase();
@@ -454,6 +488,9 @@ module.exports = function(apiKey, clientkey, config) {
     wordhopObj.hopOut = wordhopbot.hopOut;
     wordhopObj.logUnkownIntent = wordhopbot.logUnkownIntent;
     wordhopObj.assistanceRequested = wordhopbot.assistanceRequested;
+    wordhopObj.query = wordhopbot.query;
+    wordhopObj.queryWithBot = wordhopbot.queryWithBot;
+    
     wordhopObj.hopIn = function(message, cb) {
         wordhopbot.hopIn(message).then(function (obj) {
             var isPaused = true;
