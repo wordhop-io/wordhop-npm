@@ -65,7 +65,6 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
         if (that.checkIfMessage(message) == false) {
             return;
         }
-        console.log("logUnkownIntent");
         var data = {
             method: 'POST',
             url: that.serverRoot + that.path + 'unknown',
@@ -86,7 +85,6 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
         if (that.checkIfMessage(message) == false) {
             return Promise.resolve();
         }
-        console.log("assistanceRequested");
         var data = {
             method: 'POST',
             url: that.serverRoot + that.path + 'human',
@@ -105,7 +103,6 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
         if (that.checkIfMessage(message) == false) {
             return Promise.resolve();
         }
-        console.log("hopIn");
         var data = {
             method: 'POST',
             url: that.serverRoot + that.path + 'in',
@@ -129,7 +126,6 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
         if (that.checkIfMessage(message) == false) {
             return;
         }
-        console.log("hopOut");
         var data = {
             method: 'POST',
             url: that.serverRoot + that.path + 'out',
@@ -155,8 +151,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
         }
         if (that.events[event]) {
             for (var e = 0; e < that.events[event].length; e++) {
-                console.log(data);
-
+                
                 var res = that.events[event][e].apply(that, data);
                 if (res === false) {
                     return;
@@ -204,7 +199,6 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
     }
 
     that.setSocketId = function(socketId) {
-        console.log("set socket : " + socketId);
         that.socketId = socketId;
     }
 
@@ -270,7 +264,6 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
     });
 
     that.query = function(message) {
-        console.log("query");    
         var headers = {
                         'content-type': 'application/json',
                         'apikey': that.apiKey,
