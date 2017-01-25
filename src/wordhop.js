@@ -4,9 +4,112 @@ var rp = require('request-promise');
 var Promise = require("bluebird");
 var io = require('socket.io-client');
 
-function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, debug) {
+function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, useWebhook, debug) {
     var that = Object;
-    var socket = io.connect(socketServer);
+    that.useWebhook = useWebhook;
+    if (useWebhook === false) {
+        var socket = io.connect(socketServer);
+        that.emit = function(event, message) {
+            socket.emit(event, message);
+        }
+
+        socket.on('connect', function (message) {  
+            that.trigger('connect');
+        });
+
+        socket.on('socket_id_set', function (socket_id) {
+            that.setSocketId(socket_id);
+            var data = {
+                method: 'POST',
+                url: that.serverRoot + that.path + 'update_bot_socket_id',
+                headers: {
+                    'content-type': 'application/json',
+                    'apikey': that.apiKey,
+                    'clientkey': that.clientkey,         
+                    'type': 'connect'
+                },
+                json: {'socket_id': socket_id}
+            };
+            that.trigger('socket_id_set');
+            rp(data);
+        });
+
+        socket.on('chat response', function (msg) {
+            var event = 'chat response';
+            that.trigger(event, [msg]);
+        });
+
+        socket.on('failure log', function (msg) {
+            var event = 'failure log';
+            that.trigger(event, [msg]);
+        });
+
+        socket.on('chat message', function (msg) {
+            var event = 'chat message';
+            that.trigger(event, [msg]);
+        });
+
+        socket.on('bot message', function (msg) {
+            var event = 'bot message';
+            that.trigger(event, [msg]);
+        });
+
+        socket.on('engage users', function (msg) {
+            var event = 'engage users';
+            that.trigger(event, [msg]);
+        });
+
+        socket.on('inactive channels message', function (msg) {
+            var event = 'inactive channels message';
+            that.trigger(event, [msg]);
+        });
+
+        socket.on('resumed channels message', function (msg) {
+            var event = 'resumed channels message';
+            that.trigger(event, [msg]);
+        });
+
+        socket.on('live chat request message', function (msg) {
+            var event = 'live chat request message';
+            that.trigger(event, [msg]);
+        });
+
+        that.trigger = function(event, data) {
+             if (debug) {
+                console.log('handler:', event);
+            }
+            if (that.events[event]) {
+                for (var e = 0; e < that.events[event].length; e++) {
+                    
+                    var res = that.events[event][e].apply(that, data);
+                    if (res === false) {
+                        return;
+                    }
+                }
+            } else if (debug) {
+                console.log('No handler for', event);
+            }
+        };
+
+        that.on = function(event, cb) {
+            var events = (typeof(event) == 'string') ? event.split(/\,/g) : event;
+            for (var e in events) {
+                if (!that.events[events[e]]) {
+                    that.events[events[e]] = [];
+                }
+                that.events[events[e]].push(cb);
+            }
+            return that;
+        };
+
+        that.getSocketId = function () {
+            return that.socketId;
+        }
+
+        that.setSocketId = function(socketId) {
+            that.socketId = socketId;
+        }
+    }
     that.apiKey = apiKey;
     that.serverRoot = serverRoot;
     that.path = path;
@@ -15,9 +118,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
     that.token = token;
     that.events = {};
 
-    that.emit = function(event, message) {
-        socket.emit(event, message);
-    }
+    
 
     that.checkIfMessage = function(msg) {
         var message = msg;
@@ -111,11 +212,13 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
                 'apikey': that.apiKey,
                 'platform': that.platform,
                 'clientkey': that.clientkey,
-                'socket_id': that.getSocketId(),
                 'type':'in'
             },
             json: message
         };
+        if (useWebhook === false) {
+            data.headers.socket_id  = that.getSocketId();
+        }
         if (that.token != "") {
             data.headers.token = that.token;
         }
@@ -134,44 +237,20 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
                 'apikey': that.apiKey,
                 'platform': that.platform,
                 'clientkey': that.clientkey,
-                'socket_id': that.getSocketId(),
                 'type':'out'
             },
             json: message
         };
+        if (useWebhook === false) {
+            data.headers.socket_id  = that.getSocketId();
+        }
 
         setTimeout(function() {
             rp(data);
         }, 500);
     }
 
-    that.trigger = function(event, data) {
-         if (debug) {
-            console.log('handler:', event);
-        }
-        if (that.events[event]) {
-            for (var e = 0; e < that.events[event].length; e++) {
-                
-                var res = that.events[event][e].apply(that, data);
-                if (res === false) {
-                    return;
-                }
-            }
-        } else if (debug) {
-            console.log('No handler for', event);
-        }
-    };
-
-    that.on = function(event, cb) {
-        var events = (typeof(event) == 'string') ? event.split(/\,/g) : event;
-        for (var e in events) {
-            if (!that.events[events[e]]) {
-                that.events[events[e]] = [];
-            }
-            that.events[events[e]].push(cb);
-        }
-        return that;
-    };
+    
 
     that.checkForPaused = function(channel, cb) {
         var headers = {
@@ -193,75 +272,6 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, de
             cb(null);
         });
     }
-
-    that.getSocketId = function () {
-        return that.socketId;
-    }
-
-    that.setSocketId = function(socketId) {
-        that.socketId = socketId;
-    }
-
-    socket.on('connect', function (message) {  
-        that.trigger('connect');
-    });
-
-    socket.on('socket_id_set', function (socket_id) {
-        that.setSocketId(socket_id);
-        var data = {
-            method: 'POST',
-            url: that.serverRoot + that.path + 'update_bot_socket_id',
-            headers: {
-                'content-type': 'application/json',
-                'apikey': that.apiKey,
-                'clientkey': that.clientkey,         
-                'type': 'connect'
-            },
-            json: {'socket_id': socket_id}
-        };
-        that.trigger('socket_id_set');
-        rp(data);
-    });
-
-    socket.on('chat response', function (msg) {
-        var event = 'chat response';
-        that.trigger(event, [msg]);
-    });
-
-    socket.on('failure log', function (msg) {
-        var event = 'failure log';
-        that.trigger(event, [msg]);
-    });
-
-    socket.on('chat message', function (msg) {
-        var event = 'chat message';
-        that.trigger(event, [msg]);
-    });
-
-    socket.on('bot message', function (msg) {
-        var event = 'bot message';
-        that.trigger(event, [msg]);
-    });
-
-    socket.on('engage users', function (msg) {
-        var event = 'engage users';
-        that.trigger(event, [msg]);
-    });
-
-    socket.on('inactive channels message', function (msg) {
-        var event = 'inactive channels message';
-        that.trigger(event, [msg]);
-    });
-
-    socket.on('resumed channels message', function (msg) {
-        var event = 'resumed channels message';
-        that.trigger(event, [msg]);
-    });
-
-    socket.on('live chat request message', function (msg) {
-        var event = 'live chat request message';
-        that.trigger(event, [msg]);
-    });
 
     that.query = function(message) {
         var headers = {
@@ -450,6 +460,7 @@ module.exports = function(apiKey, clientkey, config) {
     var controller;
     var platform = 'slack';
     var token = '';
+    var useWebhook = false;
     if (config) {
         debug = config.debug;
         serverRoot = config.serverRoot || serverRoot;
@@ -458,8 +469,9 @@ module.exports = function(apiKey, clientkey, config) {
         platform = config.platform || platform;
         socketServer = config.socketServer || socketServer;
         token = config.token || token;
+        useWebhook = config.useWebhook || useWebhook;
     }
-    var wordhopbot = WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, debug);
+    var wordhopbot = WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, useWebhook, debug);
     wordhopbot.nlpURL = nlpURL;
     var wordhopObj;
 
@@ -477,9 +489,11 @@ module.exports = function(apiKey, clientkey, config) {
         throw new Error('platform not supported. please set it to be either "slack" or "messenger (alias: facebook)".');
     }
 
-    wordhopObj.on = wordhopbot.on;
-    wordhopObj.emit = wordhopbot.emit;
-    wordhopObj.getSocketId = wordhopbot.getSocketId;
+    if (useWebhook === false) {
+        wordhopObj.emit = wordhopbot.emit;
+        wordhopObj.on = wordhopbot.on;
+        wordhopObj.getSocketId = wordhopbot.getSocketId;
+    }
     wordhopObj.checkForPaused = wordhopbot.checkForPaused;
     wordhopObj.hopOut = wordhopbot.hopOut;
     wordhopObj.logUnkownIntent = wordhopbot.logUnkownIntent;
