@@ -227,7 +227,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
 
     that.hopOut = function(message) {
         if (that.checkIfMessage(message) == false) {
-            return;
+            return Promise.resolve();
         }
         var data = {
             method: 'POST',
@@ -246,7 +246,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
         }
 
         setTimeout(function() {
-            rp(data);
+            return rp(data);
         }, 500);
     }
 
@@ -503,6 +503,22 @@ module.exports = function(apiKey, clientkey, config) {
     
     wordhopObj.hopIn = function(message, cb) {
         wordhopbot.hopIn(message).then(function (obj) {
+            var isPaused = true;
+            if (obj) {
+                isPaused = obj.paused;
+            } 
+            message.paused = isPaused;
+            if (cb) {
+                cb(isPaused);
+            } 
+        })
+        .catch(function (err) {
+            cb(false);
+        });
+    };
+
+    wordhopObj.hopOut = function(message, cb) {
+        wordhopbot.hopOut(message).then(function (obj) {
             var isPaused = true;
             if (obj) {
                 isPaused = obj.paused;
