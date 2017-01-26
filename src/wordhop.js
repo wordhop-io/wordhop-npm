@@ -46,41 +46,6 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
             that.trigger(event, [msg]);
         });
 
-        socket.on('failure log', function (msg) {
-            var event = 'failure log';
-            that.trigger(event, [msg]);
-        });
-
-        socket.on('chat message', function (msg) {
-            var event = 'chat message';
-            that.trigger(event, [msg]);
-        });
-
-        socket.on('bot message', function (msg) {
-            var event = 'bot message';
-            that.trigger(event, [msg]);
-        });
-
-        socket.on('engage users', function (msg) {
-            var event = 'engage users';
-            that.trigger(event, [msg]);
-        });
-
-        socket.on('inactive channels message', function (msg) {
-            var event = 'inactive channels message';
-            that.trigger(event, [msg]);
-        });
-
-        socket.on('resumed channels message', function (msg) {
-            var event = 'resumed channels message';
-            that.trigger(event, [msg]);
-        });
-
-        socket.on('live chat request message', function (msg) {
-            var event = 'live chat request message';
-            that.trigger(event, [msg]);
-        });
-
         that.events = {};
 
         that.trigger = function(event, data) {
