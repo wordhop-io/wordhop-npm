@@ -2,12 +2,19 @@
 
 var rp = require('request-promise');
 var Promise = require("bluebird");
-var io = require('socket.io-client');
 
 function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, useWebhook, debug) {
     var that = Object;
+    
+    that.apiKey = apiKey;
+    that.serverRoot = serverRoot;
+    that.path = path;
+    that.debug = debug;
+    that.clientkey = clientkey;
+    that.token = token;
     that.useWebhook = useWebhook;
-    if (useWebhook === false) {
+    if (that.useWebhook === false) {
+        var io = require('socket.io-client');
         var socket = io.connect(socketServer);
         that.emit = function(event, message) {
             socket.emit(event, message);
@@ -74,6 +81,8 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
             that.trigger(event, [msg]);
         });
 
+        that.events = {};
+
         that.trigger = function(event, data) {
              if (debug) {
                 console.log('handler:', event);
@@ -110,16 +119,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
             that.socketId = socketId;
         }
     }
-    that.apiKey = apiKey;
-    that.serverRoot = serverRoot;
-    that.path = path;
-    that.debug = debug;
-    that.clientkey = clientkey;
-    that.token = token;
-    that.events = {};
-
     
-
     that.checkIfMessage = function(msg) {
         var message = msg;
         if (message.entry) {
@@ -244,10 +244,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
         if (useWebhook === false) {
             data.headers.socket_id  = that.getSocketId();
         }
-
-        setTimeout(function() {
-            return rp(data);
-        }, 500);
+        return rp(data);
     }
 
     
@@ -495,7 +492,6 @@ module.exports = function(apiKey, clientkey, config) {
         wordhopObj.getSocketId = wordhopbot.getSocketId;
     }
     wordhopObj.checkForPaused = wordhopbot.checkForPaused;
-    wordhopObj.hopOut = wordhopbot.hopOut;
     wordhopObj.logUnkownIntent = wordhopbot.logUnkownIntent;
     wordhopObj.assistanceRequested = wordhopbot.assistanceRequested;
     wordhopObj.query = wordhopbot.query;
@@ -511,9 +507,11 @@ module.exports = function(apiKey, clientkey, config) {
             if (cb) {
                 cb(isPaused);
             } 
+            return Promise.resolve(isPaused);
         })
         .catch(function (err) {
             cb(false);
+            return Promise.reject();
         });
     };
 
@@ -526,13 +524,14 @@ module.exports = function(apiKey, clientkey, config) {
             message.paused = isPaused;
             if (cb) {
                 cb(isPaused);
-            } 
+            }
+            return Promise.resolve(isPaused);
         })
         .catch(function (err) {
             cb(false);
+            return Promise.reject();
         });
     };
-
     
     return wordhopObj;
 };
