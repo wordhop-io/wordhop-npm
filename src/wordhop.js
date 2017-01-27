@@ -114,12 +114,12 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
         if (message.text == null) {
             message.text = "";
         }
-        if ((message.type === 'user_message' || message.type === 'message' || message.type === 'facebook_postback' || message.type === null || message.page) &&
-            message.transcript === null &&
-            (message.subtype === null || message.subtype === "file_share") &&
+        if ((message.type == 'user_message' || message.type == 'message' || message.type == 'facebook_postback' || message.type == null || message.page) &&
+            message.transcript == null &&
+            (message.subtype == null || message.subtype == "file_share") &&
             message.hasOwnProperty("reply_to") == false &&
-            message.is_echo === null &&
-            message.bot_id === null &&
+            message.is_echo == null &&
+            message.bot_id == null &&
             (message.text.length > 0 || message.attachments != null || message.attachment != null)) {
             return true;
         } else {
@@ -448,7 +448,7 @@ module.exports = function(apiKey, clientkey, config) {
     wordhopObj.hopIn = function(message, cb) {
         return wordhopbot.hopIn(message)
         .then(function (obj) {
-            var isPaused = true;
+            var isPaused = false;
             if (obj) {
                 isPaused = obj.paused;
             } 
@@ -467,7 +467,7 @@ module.exports = function(apiKey, clientkey, config) {
     wordhopObj.hopOut = function(message, cb) {
         return wordhopbot.hopOut(message)
         .then(function (obj) {
-            var isPaused = true;
+            var isPaused = false;
             if (obj) {
                 isPaused = obj.paused;
             } 
