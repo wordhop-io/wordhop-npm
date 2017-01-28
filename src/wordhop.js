@@ -461,7 +461,9 @@ module.exports = function(apiKey, clientkey, config) {
             return Promise.resolve(isPaused);
         })
         .catch(function (err) {
-            cb(false);
+            if (cb) {
+                cb(false);
+            } 
             return Promise.reject();
         });
     };
@@ -480,7 +482,9 @@ module.exports = function(apiKey, clientkey, config) {
             return Promise.resolve(isPaused);
         })
         .catch(function (err) {
-            cb(false);
+            if (cb) {
+                cb(false);
+            } 
             return Promise.reject();
         });
     };
