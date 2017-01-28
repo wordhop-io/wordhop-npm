@@ -16,6 +16,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
     if (that.useWebhook === false) {
         var io = require('socket.io-client');
         var socket = io.connect(socketServer);
+        that.socket = socket;
         that.emit = function(event, message) {
             socket.emit(event, message);
         }
@@ -444,6 +445,7 @@ module.exports = function(apiKey, clientkey, config) {
     wordhopObj.logUnkownIntent = wordhopbot.logUnkownIntent;
     wordhopObj.assistanceRequested = wordhopbot.assistanceRequested;
     wordhopObj.query = wordhopbot.query;
+    wordhopObj.socket = socket;
     
     wordhopObj.hopIn = function(message, cb) {
         return wordhopbot.hopIn(message)

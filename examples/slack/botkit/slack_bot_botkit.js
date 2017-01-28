@@ -227,7 +227,10 @@ function formatUptime(uptime) {
 
 
 
-var wordhop = require('wordhop')(process.env.WORDHOP_API_KEY, process.env.WORDHOP_CLIENT_KEY, {platform:'slack'});
+var wordhop = require('wordhop')(process.env.WORDHOP_API_KEY, process.env.WORDHOP_CLIENT_KEY, {platform:'slack',
+    serverRoot: process.env.WORDHOP_API_URL,
+    socketServer: process.env.SOCKET_SERVER_URL
+    });
 
 
 // Add the wordhop middleware 

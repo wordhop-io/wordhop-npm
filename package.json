@@ -1,6 +1,6 @@
 {
   "name": "wordhop",
-  "version": "1.3.54",
+  "version": "1.3.55",
   "description": "A toolkit for creating a hybrid Chatbot + Human UX",
   "main": "src/wordhop.js",
   "dependencies": {
@@ -13,7 +13,6 @@
     "chatbot",
     "bot",
     "opitmization",
-    "bot",
     "analytics"
   ],
   "author": "Michael Nathanson",
