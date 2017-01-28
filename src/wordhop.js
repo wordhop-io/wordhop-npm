@@ -166,8 +166,8 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
         return rp(data);
     }
 
-    that.hopIn = function(message) {
-        if (that.checkIfMessage(message) == false) {
+    that.hopIn = function(message, reply) {
+        if (that.checkIfMessage(message) == false) { 
             return Promise.resolve();
         }
         var data = {
@@ -184,6 +184,9 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
         };
         if (useWebhook === false) {
             data.headers.socket_id  = that.getSocketId();
+        }
+        if (reply) {
+            data.json.reply  = reply;
         }
         if (that.token != "") {
             data.headers.token = that.token;
@@ -446,9 +449,22 @@ module.exports = function(apiKey, clientkey, config) {
     wordhopObj.assistanceRequested = wordhopbot.assistanceRequested;
     wordhopObj.query = wordhopbot.query;
     wordhopObj.socket = wordhopbot.socket;
+
+    function isFunction(functionToCheck) {
+        var getType = {};
+        return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+    }
     
-    wordhopObj.hopIn = function(message, cb) {
-        return wordhopbot.hopIn(message)
+    wordhopObj.hopIn = function(message, arg1, arg2) {
+        var cb;
+        var reply;
+        if (isFunction(arg1)) {
+            cb = arg1;
+        } else {
+            reply = arg1;
+            cb = arg2;
+        }
+        return wordhopbot.hopIn(message, reply)
         .then(function (obj) {
             var isPaused = false;
             if (obj) {
@@ -471,15 +487,10 @@ module.exports = function(apiKey, clientkey, config) {
     wordhopObj.hopOut = function(message, cb) {
         return wordhopbot.hopOut(message)
         .then(function (obj) {
-            var isPaused = false;
-            if (obj) {
-                isPaused = obj.paused;
-            } 
-            message.paused = isPaused;
             if (cb) {
-                cb(isPaused);
-            }
-            return Promise.resolve(isPaused);
+                cb(true);
+            } 
+            return Promise.resolve(true);
         })
         .catch(function (err) {
             if (cb) {
