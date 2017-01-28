@@ -445,7 +445,7 @@ module.exports = function(apiKey, clientkey, config) {
     wordhopObj.logUnkownIntent = wordhopbot.logUnkownIntent;
     wordhopObj.assistanceRequested = wordhopbot.assistanceRequested;
     wordhopObj.query = wordhopbot.query;
-    wordhopObj.socket = socket;
+    wordhopObj.socket = wordhopbot.socket;
     
     wordhopObj.hopIn = function(message, cb) {
         return wordhopbot.hopIn(message)
