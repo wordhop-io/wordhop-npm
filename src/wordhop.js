@@ -128,7 +128,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
         }
     }
 
-    that.getClientKey(message) {
+    that.getClientKey = function(message) {
         var key = that.clientkey;
         if (message.client_key) {
             key = message.client_key;
