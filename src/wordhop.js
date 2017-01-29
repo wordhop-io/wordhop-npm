@@ -128,6 +128,14 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
         }
     }
 
+    that.getClientKey(message) {
+        var key = that.clientkey;
+        if (message.client_key) {
+            key = message.client_key;
+        }
+        return key;
+    }
+
     that.logUnkownIntent = function(message) {
         if (that.checkIfMessage(message) == false) {
             return;
@@ -139,7 +147,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
                 'content-type': 'application/json',
                 'apikey': that.apiKey,
                 'platform': that.platform,
-                'clientkey': that.clientkey,
+                'clientkey': that.getClientKey(message),
                 'failure': true,
                 'type':'unknown'
             },
@@ -159,7 +167,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
                 'content-type': 'application/json',
                 'apikey': that.apiKey,
                 'platform': that.platform,
-                'clientkey': that.clientkey
+                'clientkey': that.getClientKey(message)
             },
             json: message
         };
@@ -177,7 +185,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
                 'content-type': 'application/json',
                 'apikey': that.apiKey,
                 'platform': that.platform,
-                'clientkey': that.clientkey,
+                'clientkey': that.getClientKey(message),
                 'type':'in'
             },
             json: message
@@ -205,7 +213,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
                 'content-type': 'application/json',
                 'apikey': that.apiKey,
                 'platform': that.platform,
-                'clientkey': that.clientkey,
+                'clientkey': that.getClientKey(message),
                 'type':'out'
             },
             json: message
