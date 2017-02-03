@@ -1,15 +1,22 @@
-# [Wordhop](https://www.wordhop.io) - A Toolkit For Human + AI Conversational Experiences
+# [Wordhop](https://www.Wordhop.io) - A Toolkit For Building Human + AI Conversational Experiences
 ## For Chatbots Built in Node.js
 
-Bots allow businesses to respond faster and lower operational costs, but they can't empathize like humans, or solve overly complex customer problems. With Wordhop, you can monitor your bot for communication problems and take over live to delight your customers. Add our SDK to bots you build and add your team. Wordhop begins working immediately enabling you to deliver an exceptional conversational experience.
+Bots can help your business respond faster and scale your service delivery at a lower cost, but bots can't empathize like humans, or solve overly complex customer problems. With Wordhop, you can monitor your bots for communication problems and take over live to engage your customers.  
+It includes a number of smart alerts out of the box, and you can create your own alerts.  You can resume automated messaging manually, or if you stop engaging your user, the bot will automatically resume. This is how we see humans and AI collaborating on customer service in the messaging era: 
 
+![Solution](https://cloud.githubusercontent.com/assets/7429980/22609969/491afe58-ea31-11e6-8928-27e1a1f1d6bd.png)
+
+
+
+You can integrate Wordhop in minutes and it begins working immediately, enabling you to deliver exceptional human + AI conversational experiences.
 This module has been tested with Messenger, Slack, Skype, and Microsoft Webchat. Please see our [examples](./examples/).
-
-![Diagram](https://wordhop.io/img/step2b.png)
+It supports bot developers working in Node, Python and Ruby.
 
 ### What you can do with Wordhop:
-* [See Key Features](https://developer.wordhop.io)
-* [Watch a Demo](https://www.youtube.com/watch?v=TAcwr3s9l4o)
+You can view a full list of features at (https://www.wordhop.io).  It's core purpose can be explained with this single GIF  
+
+![Takeover](https://cloud.githubusercontent.com/assets/7429980/22609935/22e39740-ea31-11e6-8286-e5a3ae545565.gif)
+
 
 ### What you need to get started:
 * [A Slack Account](http://www.slack.com)
