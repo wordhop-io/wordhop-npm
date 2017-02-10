@@ -47,6 +47,11 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
             that.trigger(event, [msg]);
         });
 
+        socket.on('channel update', function (msg) {
+            var event = 'channel update';
+            that.trigger(event, [msg]);
+        });
+
         that.events = {};
 
         that.trigger = function(event, data) {
