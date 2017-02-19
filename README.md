@@ -1,8 +1,7 @@
-# [Wordhop](https://www.Wordhop.io) - A Toolkit For Building Human + AI Conversational Experiences
-## For Chatbots Built in Node.js
+# [Wordhop](https://www.Wordhop.io) - SDK For Human + AI Conversational Experiences
+## For Bots Built in Node.js
 
-Bots can help your business respond faster and scale your service delivery at a lower cost, but bots can't empathize like humans, or solve overly complex customer problems. With Wordhop, you can monitor your bots for communication problems and take over live to engage your customers.  
-It includes a number of smart alerts out of the box, and you can create your own alerts.  You can resume automated messaging manually, or if you stop engaging your user, the bot will automatically resume. This is how we see humans and AI collaborating on customer service in the messaging era: 
+Bots enable businesses to respond to customers immediately and reduce operational costs, but they can’t empathize like humans, and often fail to understand user intent. Wordhop solves this problem with a toolkit for creating hybrid human + AI conversational experiences.    The solution includes a simple SDK for bot developers and an intuitive management interface built on Slack.  You can monitor bots and get alerts, pause and take over bots, and engage your customers all without leaving Slack.
 
 ![Solution](https://cloud.githubusercontent.com/assets/7429980/22609969/491afe58-ea31-11e6-8928-27e1a1f1d6bd.png)
 
