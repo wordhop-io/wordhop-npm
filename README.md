@@ -1,14 +1,13 @@
 # [Wordhop](https://www.Wordhop.io) - SDK For Human + AI Conversational Experiences
 ## For Bots Built in Node.js
 
-Bots enable businesses to respond to customers immediately and reduce operational costs, but they can’t empathize like humans, and often fail to understand user intent. Wordhop solves this problem with a toolkit for creating hybrid human + AI conversational experiences.    The solution includes a simple SDK for bot developers and an intuitive management interface built on Slack.  You can monitor bots and get alerts, pause and take over bots, and engage your customers all without leaving Slack.
+Bots enable businesses to respond to customers immediately but they often fail to understand user intent.  According to Facebook, bots fail 70% of the time. Wordhop helps solve this problem with a toolkit to easily keep humans in the loop when AI fails your customers.    The solution includes an SDK for bot developers to connect their bots to Slack, and a Slack app to get alerts, then pause and take over a bot.
 
 ![Solution](https://cloud.githubusercontent.com/assets/7429980/22609969/491afe58-ea31-11e6-8928-27e1a1f1d6bd.png)
 
 
 
-You can integrate Wordhop in minutes and it begins working immediately, enabling you to deliver exceptional human + AI conversational experiences.
-This module has been tested with Messenger, Slack, Skype, and Microsoft Webchat. Please see our [examples](./examples/).
+You can integrate Wordhop in minutes and it begins working immediately. This module has been tested with Messenger, Slack, Skype, and Microsoft Webchat. Please see our [examples](./examples/).
 It supports bot developers working in Node, Python and Ruby.
 
 ### What you can do with Wordhop:
@@ -19,8 +18,8 @@ You can view a full list of features at (https://www.wordhop.io).  It's core pur
 
 ### What you need to get started:
 * [A Slack Account](http://www.slack.com)
-* [Wordhop for Slack](https://slack.com/oauth/authorize?scope=users:read,users:read.email,commands,chat:write:bot,channels:read,channels:write,bot&client_id=23850726983.39760486257)
-* [A Chatbot built in Node.js](./examples/)
+* [Wordhop for Slack](https://slack.com/oauth/authorize?scope=users:read,users:read.email,commands,chat:write:bot,chat:write:user,channels:read,channels:history,channels:write,bot&client_id=23850726983.39760486257)
+* [A bot built in Node.js](./examples/)
 
 ##### Operational Dependencies:
 1.  You'll need an API key from Wordhop and for each Chatbot a Bot Token.  You can get both of those (free) when you add Wordhop to Slack and through a conversation with Wordhop. 
