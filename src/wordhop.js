@@ -3,6 +3,10 @@
 var rp = require('request-promise');
 var Promise = require("bluebird");
 
+var checkIfString = function(myVar) {
+    return (typeof myVar === 'string' || myVar instanceof String)
+}
+
 function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, useWebhook, debug) {
     var that = Object;
     
@@ -104,7 +108,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
         if (message.postback) {
             return true;
         }
-        if (msg.message) {
+        if (msg.message && !checkIfString(msg.message)) {
             message = msg.message;
         }
         if  (msg.sourceEvent) {
