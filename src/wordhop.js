@@ -275,7 +275,6 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
 function WordhopBotFacebook(wordhopbot, controller, debug) {
     var that = this;
     that.controller = controller;
-    wordhopbot.platform = 'messenger';
     if (that.controller) {
         that.controller.on('message_received', function(bot, message) {
             wordhopbot.logUnkownIntent(message);
@@ -299,7 +298,6 @@ function WordhopBotFacebook(wordhopbot, controller, debug) {
 function WordhopBotMicrosoft(wordhopbot, controller, debug) {
     var that = this;
     that.controller = controller;
-    wordhopbot.platform = 'microsoft';
     if (that.controller) {
         that.controller.on('message_received', function(bot, message) {
             wordhopbot.logUnkownIntent(message);
@@ -321,7 +319,6 @@ function WordhopBotMicrosoft(wordhopbot, controller, debug) {
 
 function WordhopBotSlack(wordhopbot, controller, debug) {
     var that = this;
-    wordhopbot.platform = 'slack';
     that.controller = controller;
     
     // botkit middleware endpoints
@@ -404,6 +401,11 @@ function WordhopBotSlack(wordhopbot, controller, debug) {
     }
 }
 
+function isFunction(functionToCheck) {
+    var getType = {};
+    return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+}
+    
 module.exports = function(apiKey, clientkey, config) {
 
     if (!apiKey && !clientkey) {
@@ -439,7 +441,7 @@ module.exports = function(apiKey, clientkey, config) {
     var wordhopObj;
 
     platform = platform.toLowerCase();
-    
+ 
     if (platform == 'slack') {
         wordhopObj = new WordhopBotSlack(wordhopbot, controller, debug);
     } else if (platform == 'facebook' || platform == 'messenger') {
@@ -462,11 +464,9 @@ module.exports = function(apiKey, clientkey, config) {
     wordhopObj.assistanceRequested = wordhopbot.assistanceRequested;
     wordhopObj.query = wordhopbot.query;
     wordhopObj.socket = wordhopbot.socket;
+    wordhopbot.platform = platform;
+    
 
-    function isFunction(functionToCheck) {
-        var getType = {};
-        return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-    }
     
     wordhopObj.hopIn = function(message, arg1, arg2) {
         var cb;
@@ -512,6 +512,15 @@ module.exports = function(apiKey, clientkey, config) {
             return Promise.reject();
         });
     };
+
+    wordhopObj.setPlatform = function(platform) {
+        if (platform == 'facebook' || platform == 'messenger') {
+            platform = "messenger";
+        }
+        if (platform === 'slack' || platform === 'messenger' || platform === 'microsoft') {
+            wordhopbot.platform = platform;
+        }
+    }
     
     return wordhopObj;
 };
