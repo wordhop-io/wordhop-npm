@@ -108,8 +108,15 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
         if (message.postback) {
             return true;
         }
-        if (msg.message && !checkIfString(msg.message)) {
-            message = msg.message;
+        if (msg.message) {
+            if  (!checkIfString(msg.message)) {
+                message = msg.message;
+            } else {
+                if (msg.text === null) {
+                    msg.text = msg.message;
+                }
+                delete msg.message;
+            }
         }
         if  (msg.sourceEvent) {
             var slackMessage = msg.sourceEvent.SlackMessage;
