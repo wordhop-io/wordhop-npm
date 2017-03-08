@@ -246,10 +246,16 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
         };
         return rp(data)
         .then(function (obj) {
-            cb(obj);
+            if (cb) {
+                cb(obj);
+            } 
+            return obj;
         })
         .catch(function (err) {
-            cb(null);
+            if (cb) {
+                cb(false);
+            } 
+            throw err;
         });
     }
 
