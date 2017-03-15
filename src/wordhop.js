@@ -504,7 +504,7 @@ module.exports = function(apiKey, clientkey, config) {
             if (cb) {
                 cb(false);
             } 
-            return Promise.reject();
+            return Promise.reject(err);
         });
     };
 
@@ -520,7 +520,7 @@ module.exports = function(apiKey, clientkey, config) {
             if (cb) {
                 cb(false);
             } 
-            return Promise.reject();
+            return Promise.reject(err);
         });
     };
 
