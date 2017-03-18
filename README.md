@@ -18,7 +18,7 @@ You can view a full list of features at (https://www.wordhop.io).  It's core pur
 
 ### What you need to get started:
 * [A Slack Account](http://www.slack.com)
-* [Wordhop for Slack](https://slack.com/oauth/authorize?scope=users:read,users:read.email,commands,chat:write:bot,chat:write:user,channels:read,channels:history,channels:write,bot&client_id=23850726983.39760486257)
+* [Wordhop for Slack](https://slack.com/oauth/authorize?scope=users:read,users:read.email,commands,chat:write:bot,chat:write:user,channels:read,channels:history,files:write:user,channels:write,bot&client_id=23850726983.39760486257)
 * [A bot built in Node.js](./examples/)
 
 ##### Operational Dependencies:
