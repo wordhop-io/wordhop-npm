@@ -164,7 +164,7 @@ if (text == 'help') {
 
 ##### Human Take Over:
 
-To enable the ability to have a human take over your bot, add the following code:
+To enable the ability to have a human take over your bot, add the code below to subscribe to the 'chat response' event. Alternatively, if you'd prefer to use a webhook to receive the payload, please get in touch with us at support@wordhop.io and we can enable that for you.
 
 ```javascript
 // Handle forwarding the messages sent by a human through your bot
