@@ -152,7 +152,7 @@ function WordhopBot(apiKey, serverRoot, path, socketServer, clientkey, token, us
         return key;
     }
 
-    that.logUnkownIntent = function(message) {
+    that.logUnknownIntent = function(message) {
         if (that.checkIfMessage(message) == false) {
             return;
         }
@@ -294,7 +294,7 @@ function WordhopBotFacebook(wordhopbot, controller, debug) {
     that.controller = controller;
     if (that.controller) {
         that.controller.on('message_received', function(bot, message) {
-            wordhopbot.logUnkownIntent(message);
+            wordhopbot.logUnknownIntent(message);
         });
     }
 
@@ -317,7 +317,7 @@ function WordhopBotMicrosoft(wordhopbot, controller, debug) {
     that.controller = controller;
     if (that.controller) {
         that.controller.on('message_received', function(bot, message) {
-            wordhopbot.logUnkownIntent(message);
+            wordhopbot.logUnknownIntent(message);
         });
     }
 
@@ -409,11 +409,11 @@ function WordhopBotSlack(wordhopbot, controller, debug) {
     if (that.controller) {
         // reply to a direct mention
         that.controller.on('direct_mention', function(bot, message) {
-            wordhopbot.logUnkownIntent(message);
+            wordhopbot.logUnknownIntent(message);
         });
         // reply to a direct message
         that.controller.on('direct_message', function(bot, message) {
-            wordhopbot.logUnkownIntent(message);
+            wordhopbot.logUnknownIntent(message);
         });
     }
 }
@@ -477,7 +477,8 @@ module.exports = function(apiKey, clientkey, config) {
         wordhopObj.getSocketId = wordhopbot.getSocketId;
     }
     wordhopObj.checkForPaused = wordhopbot.checkForPaused;
-    wordhopObj.logUnkownIntent = wordhopbot.logUnkownIntent;
+    wordhopObj.logUnkownIntent = wordhopbot.logUnknownIntent;
+    wordhopObj.logUnknownIntent = wordhopbot.logUnknownIntent;
     wordhopObj.assistanceRequested = wordhopbot.assistanceRequested;
     wordhopObj.query = wordhopbot.query;
     wordhopObj.socket = wordhopbot.socket;
